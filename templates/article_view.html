@@ -1,0 +1,44 @@
+{% extends 'bootstrap/base.html' %}
+{% import 'bootstrap/utils.html' as utils %}
+
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" href="/static/css/blog.css">
+{% endblock %}
+
+{% block navbar %}{% include 'navbar.html' %}{% endblock %}
+
+{% block content %}
+<div class="container main-container narrow-container">
+  {{ utils.flashed_messages() }}
+  <article class="article-detail-card">
+    <h1>{{ article.title }}</h1>
+    <div class="detail-meta">
+      <img src="{{ avatar_url(article.author) }}" class="avatar-lg">
+      <div>
+        <div class="author-name">{{ article.author.username }}</div>
+        <div class="muted-line">发布时间：{{ article.created_at.strftime('%Y-%m-%d %H:%M') if article.created_at else '暂无时间' }}</div>
+      </div>
+      <div class="detail-actions">
+        {% if username == article.author.username %}
+        <a href="/article/edit?id={{ article.id }}" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-edit"></span> 编辑</a>
+        {% endif %}
+        <button class="like-btn btn btn-sm {% if is_liked %}btn-warning{% else %}btn-default{% endif %}"
+                data-article-id="{{ article.id }}"
+                data-is-liked="{{ 'true' if is_liked else 'false' }}"
+                data-current-user-id="{{ current_user_id or '' }}"
+                {% if not current_user_id %}disabled title="请先登录后点赞"{% endif %}>
+          <span class="glyphicon glyphicon-thumbs-up"></span>
+          <span class="like-count">{{ like_count }}</span> 人点赞
+        </button>
+      </div>
+    </div>
+    <div class="article-body">{{ article.content | safe }}</div>
+  </article>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="/static/js/article_likes.js"></script>
+{% endblock %}

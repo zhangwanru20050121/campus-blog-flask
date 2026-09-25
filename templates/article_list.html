@@ -1,0 +1,42 @@
+{% extends 'bootstrap/base.html' %}
+{% import 'bootstrap/utils.html' as utils %}
+{% import 'bootstrap/pagination.html' as pagi %}
+
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" href="/static/css/blog.css">
+{% endblock %}
+
+{% block navbar %}{% include 'navbar.html' %}{% endblock %}
+
+{% block content %}
+<div class="container main-container">
+  {{ utils.flashed_messages() }}
+  <div class="page-head">
+    <div><h2>{{ username }} 的文章列表</h2><p>管理、编辑和删除你发布的内容。</p></div>
+    <a href="/article/add" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> 创建文章</a>
+  </div>
+  <div class="table-card">
+    <table class="table table-hover article-table">
+      <thead><tr><th>ID</th><th>标题</th><th>发布时间</th><th class="text-right">操作</th></tr></thead>
+      <tbody>
+      {% for item in article_pagination.items %}
+      <tr>
+        <td>{{ item.id }}</td>
+        <td class="title-cell">{{ item.title }}</td>
+        <td>{{ item.created_at.strftime('%Y-%m-%d %H:%M') if item.created_at else '暂无时间' }}</td>
+        <td class="text-right">
+          <a href="/article/view?id={{item.id}}" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-book"></span> 查看</a>
+          <a href="/article/edit?id={{item.id}}" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-edit"></span> 编辑</a>
+          <a href="/article/delete?id={{item.id}}" class="btn btn-danger btn-sm" onclick="return confirm('确定删除这篇文章吗？')"><span class="glyphicon glyphicon-trash"></span> 删除</a>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="4" class="empty-table">你还没有发布文章。</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="pagination-wrap">{{ pagi.render_pagination(article_pagination) }}</div>
+</div>
+{% endblock %}

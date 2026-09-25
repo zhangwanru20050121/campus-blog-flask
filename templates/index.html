@@ -1,0 +1,62 @@
+{% extends 'bootstrap/base.html' %}
+{% import 'bootstrap/utils.html' as utils %}
+{% import 'bootstrap/pagination.html' as pagi %}
+
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" href="/static/css/blog.css">
+{% endblock %}
+
+{% block navbar %}{% include 'navbar.html' %}{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+  <div class="container">
+    <div class="hero-card">
+      <h1>校园博客文章广场</h1>
+      <p>记录学习、生活与技术心得，让每一篇文章都有清爽的阅读体验。</p>
+      {% if username %}<a class="btn btn-primary btn-lg" href="/article/add">发布新文章</a>{% else %}<a class="btn btn-primary btn-lg" href="/login">登录后发布</a>{% endif %}
+    </div>
+  </div>
+</div>
+
+<div class="container main-container">
+  {{ utils.flashed_messages() }}
+  <div class="row article-grid">
+    {% for article in article_pagination.items %}
+    <div class="col-md-6">
+      <div class="article-card">
+        <div class="article-card-header">
+          <img src="{{ avatar_url(article.author) }}" class="avatar-md">
+          <div>
+            <h3><a href="/article/view?id={{ article.id }}">{{ article.title }}</a></h3>
+            <div class="muted-line">{{ article.author.username }} · {{ article.created_at.strftime('%Y-%m-%d %H:%M') if article.created_at else '暂无时间' }}</div>
+          </div>
+        </div>
+        <div class="article-preview">{{ article.content | safe }}</div>
+        <div class="card-actions">
+          <a href="/article/view?id={{article.id}}" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-book"></span> 阅读全文</a>
+          <button class="like-btn btn btn-sm {% if is_liked_by_user(article.id, current_user_id) %}btn-warning{% else %}btn-default{% endif %}"
+                  data-article-id="{{ article.id }}"
+                  data-is-liked="{{ 'true' if is_liked_by_user(article.id, current_user_id) else 'false' }}"
+                  data-current-user-id="{{ current_user_id or '' }}"
+                  {% if not current_user_id %}disabled title="请先登录后点赞"{% endif %}>
+            <span class="glyphicon glyphicon-thumbs-up"></span>
+            <span class="like-count">{{ get_like_count(article.id) }}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    {% else %}
+      <div class="col-sm-12"><div class="empty-card">还没有文章，快来发布第一篇吧。</div></div>
+    {% endfor %}
+  </div>
+  <div class="pagination-wrap">{{ pagi.render_pagination(article_pagination) }}</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="/static/js/article_likes.js"></script>
+<script src="/static/js/password_toggle.js"></script>
+{% endblock %}

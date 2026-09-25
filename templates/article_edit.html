@@ -1,0 +1,27 @@
+{% extends 'bootstrap/base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+{% import 'bootstrap/utils.html' as utils %}
+
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" href="/static/css/blog.css">
+{% endblock %}
+
+{% block navbar %}{% include 'navbar.html' %}{% endblock %}
+
+{% block content %}
+<div class="container main-container narrow-container">
+  {{ utils.flashed_messages() }}
+  <div class="form-card">
+    <h2>{{ page_title or '文章编辑' }}</h2>
+    <p class="muted-line">请填写标题和正文内容，保存后会自动记录更新时间。</p>
+    {{ wtf.quick_form(form, button_map={'submit': 'primary'}) }}
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+{{ ckeditor.load() }}
+{{ ckeditor.config(name='content') }}
+{% endblock %}

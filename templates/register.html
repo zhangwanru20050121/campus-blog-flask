@@ -1,0 +1,39 @@
+{% extends 'bootstrap/base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+{% import 'bootstrap/utils.html' as utils %}
+
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" href="/static/css/blog.css">
+{% endblock %}
+
+{% block navbar %}{% include 'navbar.html' %}{% endblock %}
+
+{% block content %}
+<div class="container main-container auth-container">
+  {{ utils.flashed_messages() }}
+  <div class="form-card">
+    <h2>注册新账户</h2>
+    <p class="muted-line">可选上传头像；不上传时系统会使用默认头像。</p>
+    <form method="post" enctype="multipart/form-data">
+      {{ form.hidden_tag() }}
+      {{ wtf.form_field(form.username) }}
+      {{ wtf.form_field(form.password) }}
+      {{ wtf.form_field(form.age) }}
+      {{ wtf.form_field(form.phone) }}
+      {{ wtf.form_field(form.intro) }}
+      <div class="form-group">
+        <label>头像</label>
+        <input type="file" name="avatar" accept="image/*" class="form-control">
+      </div>
+      <button type="submit" class="btn btn-primary btn-block">注册</button>
+    </form>
+    <div class="form-bottom">已有账户？<a href="/login">去登录</a></div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="/static/js/password_toggle.js"></script>
+{% endblock %}

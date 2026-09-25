@@ -1,0 +1,28 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+env/
+.venv/
+
+# Database (don't upload local db)
+*.db
+*.sqlite
+*.sqlite3
+
+# Environment variables
+.env
+
+# VS Code
+.vscode/
+
+# Uploaded avatars (user-generated content)
+static/uploads/
+
+# OS files
+.DS_Store
+Thumbs.db
